@@ -2,29 +2,15 @@ package com.jys.tool.httpTool;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jys.tool.fileTool.FileTool;
+import com.jys.tool.httpTool.entity.JiaShanCourseVideo;
 import com.jys.tool.httpTool.response.LekeAccessRsp;
 import com.jys.tool.httpTool.response.LekeM3u8Rsp;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.FileEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.*;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,8 +25,11 @@ public class StrongHttp {
 
     private static String ticket="VFdwWlBRPT07S1Nvdkt5a3FLaTR2S3lzPTsyNjI2";
 
-    private static String baseDir = "/Users/tyq/Desktop/LearnSpaces/Tool/嘉善隔离视频/2021-11-04-4";
+    private static String baseDir = "/Users/tyq/Desktop/LearnSpaces/Tool/嘉善隔离视频/2021-11-04-2";
 
+    private static List<JiaShanCourseVideo> jiaShanCourseVideoList = new ArrayList<>();
+
+    /***起始courseID 看清楚！！！！！！！！！！！！！！！！！**/
     private static int baseCourseId = 22;
 
     public static AtomicInteger count = new AtomicInteger(21);
@@ -58,20 +47,46 @@ public class StrongHttp {
         for (String dirName : dirNameList){
             batchSendAccess(idDir+"/"+dirName);
         }
+        String json = JSONObject.toJSONString(jiaShanCourseVideoList);
+        FileTool.writeTxt(json, baseDir + "json.json", true);
+        System.out.println(json);
     }
 
 
-    public static void batchSendAccess(String path){
+    public static void batchSendAccess(String path) {
         String content = FileTool.readTxtFile(path);
-        String[] strings = StringUtils.split(content,"\n");
-        for (String id : strings){
-            if (!id.isEmpty()){
-               LekeAccessRsp rsp = sendLekeResources(id);
-               //生成SQL
-               String sql = getJiashanSQL(rsp,path.substring(path.lastIndexOf("/")+1));
-               FileTool.writeTxt(sql,baseDir+"sql.txt",true);
+        String[] strings = StringUtils.split(content, "\n");
+        for (String id : strings) {
+            if (!id.isEmpty()) {
+                LekeAccessRsp rsp = sendLekeResources(id);
+                //加入jsonArry
+                addJiaShanCourseVideoJson(rsp, path.substring(path.lastIndexOf("/") + 1));
+                //生成SQL
+                String sql = getJiashanSQL(rsp, path.substring(path.lastIndexOf("/") + 1));
+                FileTool.writeTxt(sql, baseDir + "sql.sql", true);
             }
         }
+    }
+
+    public static void addJiaShanCourseVideoJson(LekeAccessRsp rsp,String fileName){
+        String courseName = rsp.getDatas().getFile().getName();
+        String jpgURL = rsp.getDatas().getFile().getPoster();
+        String m3u8 = rsp.getDatas().getFile().getPages().get(0).getPaths().get(0);
+        Integer courseId = Integer.parseInt(fileName) + baseCourseId;
+        JiaShanCourseVideo jiaShanCourse = new JiaShanCourseVideo(
+                courseId.longValue(),
+                m3u8,
+                jpgURL,
+                100L,
+                courseName,
+                null,
+                888L,
+                new Date(),
+                888L,
+                new Date(),
+                false
+        );
+        jiaShanCourseVideoList.add(jiaShanCourse);
     }
 
     public static String getJiashanSQL(LekeAccessRsp rsp,String fileName){
