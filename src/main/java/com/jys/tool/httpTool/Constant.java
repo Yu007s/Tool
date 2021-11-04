@@ -20,4 +20,8 @@ public class Constant {
     public static String HTTP_BODY_TYPE_FILE="file";
 
     public static String HTTP_BODY_TYPE_TEXT="text";
+
+    public static String sendLekeResources_BACK = "/Users/tyq/Desktop/嘉善视频课整理/备份/accessJson.txt";
+
+    public static String sendLekeM3U8_BACK= "/Users/tyq/Desktop/嘉善视频课整理/备份/m3u8RspJson.txt";
 }

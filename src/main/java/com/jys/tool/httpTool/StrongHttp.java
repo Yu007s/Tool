@@ -25,12 +25,12 @@ public class StrongHttp {
 
     private static String ticket="VFdwWlBRPT07S1Nvdkt5a3FLaTR2S3lzPTsyNjI2";
 
-    private static String baseDir = "/Users/tyq/Desktop/LearnSpaces/Tool/嘉善隔离视频/2021-11-04-2";
+    private static String baseDir = "/Users/tyq/Desktop/LearnSpaces/Tool/嘉善隔离视频/2021-11-05-1";
 
     private static List<JiaShanCourseVideo> jiaShanCourseVideoList = new ArrayList<>();
 
     /***起始courseID 看清楚！！！！！！！！！！！！！！！！！**/
-    private static int baseCourseId = 22;
+    private static int baseCourseId = 31;
 
     public static AtomicInteger count = new AtomicInteger(21);
 
@@ -151,7 +151,7 @@ public class StrongHttp {
         String responseString = "";
         try {
             responseString = HttpUtil.postHttp(Constant.getLekeResources,prams,null,null,null,null);
-            FileTool.writeTxt(responseString,"/Users/tyq/Desktop/嘉善视频课整理/备份/accessJson.txt",true);
+            FileTool.writeTxt(responseString,Constant.sendLekeResources_BACK,true);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -167,7 +167,7 @@ public class StrongHttp {
         String responseString = "";
         try {
           responseString = HttpUtil.postHttp(Constant.m3u8FormatURL,prams,null,Constant.HTTP_BODY_TYPE_FILE,file,null);
-          FileTool.writeTxt(responseString,"/Users/tyq/Desktop/嘉善视频课整理/备份/m3u8RspJson.txt",true);
+          FileTool.writeTxt(responseString,Constant.sendLekeM3U8_BACK,true);
           System.out.println(count.addAndGet(-1));
         } catch (URISyntaxException e) {
             e.printStackTrace();
