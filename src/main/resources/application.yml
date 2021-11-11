@@ -1,0 +1,17 @@
+## 服务器端口号
+server:
+  port: 7001
+spring:
+  application:
+    name: tool
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://121.43.145.125:3306/tool?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: Onkyo$78951
+mybatis:
+  mapper-locations: classpath:com/jys/tool/dao/*.xml
+  type-aliases-package: com.jys.tool.entity
+    #开启驼峰命名
+  configuration:
+      map-underscore-to-camel-case: true
